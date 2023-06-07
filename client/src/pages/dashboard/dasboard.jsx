@@ -1,12 +1,7 @@
-import Navbar from "../../components/Navbar/Navbar";
+import { Typography } from "@mui/material";
 
 const Dashboard = () => {
-  return (
-    <div>
-      <Navbar />
-      <h2>Dashboard</h2>
-    </div>
-  );
+  return <Typography variant="h6">Dashboard</Typography>;
 };
 
 export default Dashboard;
