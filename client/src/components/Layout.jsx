@@ -42,6 +42,7 @@ const links = [
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
+  const [mobileOpen, setMobileOpen] = React.useState(true);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -59,7 +60,43 @@ const Layout = ({ children }) => {
           <img src="/img/bismillah.png" alt="bismillah-header" width={200} />
         </Toolbar>
       </AppBar>
-      <Drawer
+      {mobileOpen ? (
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            [`& .MuiDrawer-paper`]: {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+        >
+          <Toolbar />
+          <Box sx={{ overflow: "auto", mt: 1 }}>
+            <List>
+              {links.map((item) => {
+                return (
+                  <ListItem
+                    sx={{ color: "black" }}
+                    key={item.path}
+                    disablePadding
+                  >
+                    <ListItemButton onClick={() => navigate(`${item.path}`)}>
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      <ListItemText primary={item.text} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Box>
+        </Drawer>
+      ) : (
+        ""
+      )}
+      {/* <Drawer
         variant="permanent"
         sx={{
           width: drawerWidth,
@@ -89,7 +126,7 @@ const Layout = ({ children }) => {
             })}
           </List>
         </Box>
-      </Drawer>
+      </Drawer> */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {children}

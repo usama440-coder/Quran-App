@@ -58,7 +58,7 @@ const rows = [
 const StudentsTable = () => {
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table sx={{ minWidth: "400px" }} aria-label="simple table">
         <TableHead>
           <TableRow
             sx={{

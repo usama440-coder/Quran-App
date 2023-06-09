@@ -10,7 +10,7 @@ const Students = () => {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>
       <AddStudent open={open} handleClose={handleClose} />
       <Box
         sx={{
