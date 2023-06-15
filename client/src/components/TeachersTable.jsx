@@ -8,54 +8,18 @@ import {
   Paper,
 } from "@mui/material";
 
-const createData = (name, email, contact, country, joining, teacher) => {
-  return { name, email, contact, country, joining, teacher };
+const createData = (name, email, contact, salary) => {
+  return { name, email, contact, salary };
 };
 
 const rows = [
-  createData(
-    "Usman Asad",
-    "usman1@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman2@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman3@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman4@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman5@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
+  createData("Usman Asad", "usman1@gmail.com", "03404403600", 50000),
+  createData("Usman Asad", "usman2@gmail.com", "03404403600", 50000),
+  createData("Usman Asad", "usman3@gmail.com", "03404403600", 50000),
+  createData("Usman Asad", "usman4@gmail.com", "03404403600", 50000),
 ];
 
-const StudentsTable = () => {
+const TeachersTable = () => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: "600px" }} aria-label="simple table">
@@ -73,13 +37,7 @@ const StudentsTable = () => {
               Contact
             </TableCell>
             <TableCell sx={{ color: "#ffffff" }} align="right">
-              Country
-            </TableCell>
-            <TableCell sx={{ color: "#ffffff" }} align="right">
-              Joining
-            </TableCell>
-            <TableCell sx={{ color: "#ffffff" }} align="right">
-              Teacher
+              Salary
             </TableCell>
           </TableRow>
         </TableHead>
@@ -94,9 +52,7 @@ const StudentsTable = () => {
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
               <TableCell align="right">{row.contact}</TableCell>
-              <TableCell align="right">{row.country}</TableCell>
-              <TableCell align="right">{row.joining}</TableCell>
-              <TableCell align="right">{row.teacher}</TableCell>
+              <TableCell align="right">{row.salary}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -105,4 +61,4 @@ const StudentsTable = () => {
   );
 };
 
-export default StudentsTable;
+export default TeachersTable;

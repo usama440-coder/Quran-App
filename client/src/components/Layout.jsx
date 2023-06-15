@@ -10,13 +10,17 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  IconButton,
 } from "@mui/material";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
+
+// links for drawer menu
 const links = [
   {
     text: "Dashboard",
@@ -40,16 +44,58 @@ const links = [
   },
 ];
 
-const Layout = ({ children }) => {
+// general menu for mobile and other screens drawer
+export const TempDrawer = () => {
   const navigate = useNavigate();
-  const [mobileOpen, setMobileOpen] = React.useState(true);
+  return (
+    <div>
+      <Toolbar />
+      <Box
+        sx={{
+          overflow: "auto",
+          mt: 1,
+          // backgroundImage: "url('/img/nav_back.jpg')",
+          // backgroundRepeat: "no-repeat",
+          // backgroundSize: 150,
+          // backgroundPositionX: "center",
+          // backgroundPositionY: "bottom",
+        }}
+      >
+        <List>
+          {links.map((item) => {
+            return (
+              <ListItem sx={{ color: "black" }} key={item.path} disablePadding>
+                <ListItemButton onClick={() => navigate(`${item.path}`)}>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
+    </div>
+  );
+};
+
+const Layout = ({ children }) => {
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  // drawer toggler
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+
+      {/* app bar above drawer component */}
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
       >
         <Toolbar
           sx={{
@@ -57,49 +103,32 @@ const Layout = ({ children }) => {
             justifyContent: "center",
           }}
         >
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{
+              mr: 2,
+              display: { md: "none" },
+              position: "absolute",
+              left: "20px",
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
           <img src="/img/bismillah.png" alt="bismillah-header" width={200} />
         </Toolbar>
       </AppBar>
-      {mobileOpen ? (
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-        >
-          <Toolbar />
-          <Box sx={{ overflow: "auto", mt: 1 }}>
-            <List>
-              {links.map((item) => {
-                return (
-                  <ListItem
-                    sx={{ color: "black" }}
-                    key={item.path}
-                    disablePadding
-                  >
-                    <ListItemButton onClick={() => navigate(`${item.path}`)}>
-                      <ListItemIcon>{item.icon}</ListItemIcon>
-                      <ListItemText primary={item.text} />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Box>
-        </Drawer>
-      ) : (
-        ""
-      )}
-      {/* <Drawer
-        variant="permanent"
+
+      {/* for mobile screen */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
         sx={{
           width: drawerWidth,
+          display: { sm: "block", md: "none" },
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
@@ -107,26 +136,32 @@ const Layout = ({ children }) => {
           },
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: "auto", mt: 1 }}>
-          <List>
-            {links.map((item) => {
-              return (
-                <ListItem
-                  sx={{ color: "black" }}
-                  key={item.path}
-                  disablePadding
-                >
-                  <ListItemButton onClick={() => navigate(`${item.path}`)}>
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.text} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Box>
-      </Drawer> */}
+        <TempDrawer />
+      </Drawer>
+
+      {/* for above medium screens */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: "none", md: "block" },
+          width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: {
+            backgroundImage: "url('/img/nav_back.png')",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: 180,
+            backgroundPositionX: "center",
+            backgroundPositionY: "bottom",
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
+        }}
+      >
+        <TempDrawer />
+      </Drawer>
+
+      {/* box contains the actual content */}
+      {/* children is any page depending on url */}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {children}
