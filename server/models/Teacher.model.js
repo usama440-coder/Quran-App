@@ -8,9 +8,24 @@ const TeacherSchema = mongoose.Schema(
       minLength: 4,
       maxLength: 50,
     },
-    country: {
+    email: {
       type: String,
-      required: [true, "Country is required"],
+      required: [true, "Email is required"],
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        "Invalid email address",
+      ],
+      unique: [true, "Email is already taken"],
+    },
+    contact: {
+      type: String,
+      required: [true, "Contact is required"],
+      unique: [true, "Contact is already taken"],
+    },
+    salary: {
+      type: Number,
+      required: [true, "Salary is not provided"],
+      min: 0,
     },
   },
   {

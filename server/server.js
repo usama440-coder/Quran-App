@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/error.middleware");
 const adminRouter = require("./routes/admin.route");
 const teacherRouter = require("./routes/teacher.route");
 const studentRouter = require("./routes/student.route");
+const courseRouter = require("./routes/course.route");
 require("dotenv").config();
 
 // middleware
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/teacher", teacherRouter);
 app.use("/api/v1/student", studentRouter);
+app.use("/api/v1/course", courseRouter);
 
 // error handler
 app.use(errorHandler);

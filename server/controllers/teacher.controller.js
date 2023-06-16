@@ -1,15 +1,15 @@
 const Teacher = require("../models/Teacher.model");
 const asyncHandler = require("express-async-handler");
-const { requiredFields, checkName } = require("../utils/validator");
+const { requiredFields, checkName, checkEmail } = require("../utils/validator");
 
 // @desc    Register Teacher
 // @route   POST /api/v1/teacher
 // @access  Admin
 const registerTeacher = asyncHandler(async (req, res) => {
-  const { name, country } = req.body;
+  const { name, email, contact, salary } = req.body;
 
   // check required Fields
-  if (!requiredFields(name, country)) {
+  if (!requiredFields(name, email, contact, salary)) {
     res.status(400);
     throw new Error("Enter required fields");
   }
@@ -20,10 +20,38 @@ const registerTeacher = asyncHandler(async (req, res) => {
     throw new Error("Name should be between 5 and 50 characters");
   }
 
+  // check email
+  if (!checkEmail(email)) {
+    res.status(400);
+    throw new Error("Invalid email address");
+  }
+
+  // check salary
+  if (salary < 0) {
+    res.status(400);
+    throw new Error("Invalid salary value");
+  }
+
+  // check teacher exists
+  const isExists = await Teacher.findOne({ email });
+  if (isExists) {
+    res.status(400);
+    throw new Error("Teacher already exists");
+  }
+
+  // contact check
+  const contactExists = await Teacher.findOne({ contact });
+  if (contactExists) {
+    res.status(400);
+    throw new Error("Contact already taken");
+  }
+
   // register
   const teacher = await Teacher.create({
     name,
-    country,
+    email,
+    contact,
+    salary,
   });
 
   res.status(201).json({ success: true, teacher });
@@ -73,13 +101,29 @@ const deleteTeacher = asyncHandler(async (req, res) => {
 // @route   PUT /api/v1/teacher/:id
 // @access  Admin
 const updateTeacher = asyncHandler(async (req, res) => {
-  const { name, country } = req.body;
+  const { name, email, contact, salary } = req.body;
 
   // check name
   if (name) {
     if (!checkName(name)) {
       res.status(400);
       throw new Error("Name should be between 5 and 50 characters");
+    }
+  }
+
+  // check email
+  if (email) {
+    if (!checkEmail(email)) {
+      res.status(400);
+      throw new Error("Invalid email value");
+    }
+  }
+
+  // check salary
+  if (salary) {
+    if (salary < 0) {
+      res.status(400);
+      throw new Error("Invalid salary value");
     }
   }
 
@@ -93,7 +137,7 @@ const updateTeacher = asyncHandler(async (req, res) => {
   // update
   const updated = await Teacher.updateOne(
     { _id: req.params.id },
-    { name, country }
+    { name, email, contact, salary }
   );
   res.status(200).json({ success: true, updated });
 });

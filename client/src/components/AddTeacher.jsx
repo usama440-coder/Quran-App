@@ -26,7 +26,7 @@ const AddTeacher = ({ open, handleClose }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    alert(inputValue);
   };
 
   return (
