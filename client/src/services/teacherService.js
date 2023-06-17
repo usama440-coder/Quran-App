@@ -1,7 +1,11 @@
 import http from "../http-common";
 
-const registerTeacher = () => {
+const registerTeacher = (data) => {
   return http.post("/teacher", data);
 };
 
-export default registerTeacher;
+const teacherService = {
+  registerTeacher,
+};
+
+export default teacherService;

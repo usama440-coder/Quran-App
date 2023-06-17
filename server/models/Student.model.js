@@ -20,11 +20,9 @@ const StudentSchema = mongoose.Schema(
     contactOne: {
       type: String,
       required: [true, "Contact is required"],
-      unique: [true, "Contact is already taken"],
     },
     contactTwo: {
       type: String,
-      unique: [true, "Contact is already taken"],
     },
     country: {
       type: String,
@@ -39,6 +37,10 @@ const StudentSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Teacher",
       required: [true, "Teacher is required"],
+    },
+    afterTwelve: {
+      type: Boolean,
+      default: false,
     },
   },
   {

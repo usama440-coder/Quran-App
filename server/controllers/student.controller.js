@@ -1,16 +1,39 @@
 const Student = require("../models/Student.model");
+const Course = require("../models/Course.model");
 const Teacher = require("../models/Teacher.model");
 const asyncHandler = require("express-async-handler");
-const { requiredFields, checkName } = require("../utils/validator");
+const { requiredFields, checkName, checkEmail } = require("../utils/validator");
 
 // @desc    Register Student
 // @route   POST /api/v1/student
 // @access  Admin
 const registerStudent = asyncHandler(async (req, res) => {
-  const { name, country, joining, teacher } = req.body;
+  const {
+    name,
+    email,
+    contactOne,
+    contactTwo,
+    age,
+    skype,
+    country,
+    teacher,
+    course,
+    afterTwelve,
+  } = req.body;
 
   // check required Fields
-  if (!requiredFields(name, country, joining, teacher)) {
+  if (
+    !requiredFields(
+      name,
+      email,
+      contactOne,
+      age,
+      skype,
+      country,
+      teacher,
+      course
+    )
+  ) {
     res.status(400);
     throw new Error("Enter required fields");
   }
@@ -21,19 +44,51 @@ const registerStudent = asyncHandler(async (req, res) => {
     throw new Error("Name should be between 5 and 50 characters");
   }
 
-  //   check teacher
+  // check email
+  if (!checkEmail(email)) {
+    res.status(400);
+    throw new Error("Invalid email");
+  }
+
+  // check age
+  if (age < 0) {
+    res.status(400);
+    throw new Error("Invalid age value");
+  }
+
+  // student exists
+  const studentExists = await Student.findOne({ email });
+  if (studentExists) {
+    res.status(400);
+    throw new Error("Student already exists");
+  }
+
+  //   teacher exists
   const teacherExists = await Teacher.findOne({ _id: teacher });
   if (!teacherExists) {
     res.status(404);
     throw new Error("Teacher does not exist");
   }
 
+  //   course exists
+  const courseExists = await Course.findOne({ _id: course });
+  if (!courseExists) {
+    res.status(404);
+    throw new Error("Course does not exist");
+  }
+
   // register
   const student = await Student.create({
     name,
+    email,
+    contactOne,
+    contactTwo,
+    age,
+    skype,
     country,
-    joining,
     teacher,
+    course,
+    afterTwelve,
   });
 
   res.status(201).json({ success: true, student });
@@ -83,7 +138,25 @@ const deleteStudent = asyncHandler(async (req, res) => {
 // @route   PUT /api/v1/student/:id
 // @access  Admin
 const updateStudent = asyncHandler(async (req, res) => {
-  const { name, country, joining, teacher } = req.body;
+  const {
+    name,
+    email,
+    contactOne,
+    contactTwo,
+    age,
+    skype,
+    country,
+    teacher,
+    course,
+    afterTwelve,
+  } = req.body;
+
+  // check student
+  const studentExists = await Student.findOne({ _id: req.params.id });
+  if (!studentExists) {
+    res.status(404);
+    throw new Error("Student not found");
+  }
 
   // check name
   if (name) {
@@ -91,6 +164,18 @@ const updateStudent = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Name should be between 5 and 50 characters");
     }
+  }
+
+  // check email
+  if (email && !checkEmail(email)) {
+    res.status(400);
+    throw new Error("Invalid email");
+  }
+
+  // check age
+  if (age && age < 0) {
+    res.status(400);
+    throw new Error("Invalid age value");
   }
 
   //   check teacher
@@ -102,17 +187,30 @@ const updateStudent = asyncHandler(async (req, res) => {
     }
   }
 
-  // check teacher exists
-  const isExists = await Student.findOne({ _id: req.params.id });
-  if (!isExists) {
-    res.status(404);
-    throw new Error("Student not found");
+  // check course
+  if (course) {
+    const courseExists = await Course.findOne({ _id: course });
+    if (!courseExists) {
+      res.status(404);
+      throw new Error("Course does not exist");
+    }
   }
 
   // update
   const updated = await Student.updateOne(
     { _id: req.params.id },
-    { name, country, joining, teacher }
+    {
+      name,
+      email,
+      contactOne,
+      contactTwo,
+      age,
+      skype,
+      country,
+      teacher,
+      course,
+      afterTwelve,
+    }
   );
   res.status(200).json({ success: true, updated });
 });

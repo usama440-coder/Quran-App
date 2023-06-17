@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
+import teacherService from "../services/teacherService";
+import { useSnackbar } from "notistack";
 
 const style = {
   position: "absolute",
@@ -18,6 +20,8 @@ const style = {
 
 const AddTeacher = ({ open, handleClose }) => {
   const [inputValue, setInputValue] = useState({});
+  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -25,8 +29,17 @@ const AddTeacher = ({ open, handleClose }) => {
     setInputValue((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    alert(inputValue);
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    try {
+      await teacherService.registerTeacher(inputValue);
+      enqueueSnackbar("Teacher added successfully", { variant: "success" });
+    } catch (error) {
+      enqueueSnackbar("Teacher could not be added", { variant: "error" });
+    }
+    setInputValue({});
+    setLoading(false);
   };
 
   return (
@@ -53,7 +66,7 @@ const AddTeacher = ({ open, handleClose }) => {
           >
             <TextField
               id="name"
-              label="Name"
+              label="Name*"
               variant="outlined"
               size="small"
               name="name"
@@ -63,7 +76,7 @@ const AddTeacher = ({ open, handleClose }) => {
             />
             <TextField
               id="email"
-              label="Email"
+              label="Email*"
               variant="outlined"
               size="small"
               name="email"
@@ -73,7 +86,7 @@ const AddTeacher = ({ open, handleClose }) => {
             />
             <TextField
               id="contact"
-              label="Contact"
+              label="Contact*"
               variant="outlined"
               size="small"
               name="contact"
@@ -83,7 +96,7 @@ const AddTeacher = ({ open, handleClose }) => {
             />
             <TextField
               id="salary"
-              label="Salary"
+              label="Salary*"
               variant="outlined"
               size="small"
               name="salary"
@@ -98,8 +111,9 @@ const AddTeacher = ({ open, handleClose }) => {
             fullWidth
             sx={{ mt: 2 }}
             onClick={handleSubmit}
+            disabled={loading}
           >
-            Add
+            {loading ? <span>Loading...</span> : <span>Save</span>}
           </Button>
         </Box>
       </Modal>
