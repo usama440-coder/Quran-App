@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
-import teacherService from "../services/teacherService";
+import courseService from "../services/courseService";
 import { useSnackbar } from "notistack";
 
 const style = {
@@ -18,29 +18,22 @@ const style = {
   alignItems: "center",
 };
 
-const AddTeacher = ({ open, handleClose, teachersData }) => {
+const AddCourse = ({ open, handleClose, courseData }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const [inputValue, setInputValue] = useState({});
+  const [course, setCourse] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setInputValue((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
     try {
-      const res = await teacherService.registerTeacher(inputValue);
-      enqueueSnackbar("Teacher added successfully", { variant: "success" });
-      teachersData.push(res?.data?.teacher);
-      setInputValue({});
+      const res = await courseService.registerCourse({ name: course });
+      enqueueSnackbar("Course added successfully", { variant: "success" });
+      courseData.push(res?.data?.course);
+      setCourse("");
     } catch (error) {
       enqueueSnackbar(
-        error?.response?.data?.message || "Teacher could not be added",
+        error?.response?.data?.message || "Course could not be added",
         { variant: "error" }
       );
     }
@@ -53,7 +46,7 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
         <Box sx={style}>
           <Box sx={{ mb: 1 }}>
             <Typography variant="h6" textAlign="center">
-              Add Teacher
+              Add Course
             </Typography>
             <img src="/img/underline.png" alt="text-underline" width={200} />
           </Box>
@@ -64,54 +57,25 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
               justifyContent: "space-between",
               gap: 1,
               flexWrap: "wrap",
-              flexDirection: { xs: "column", sm: "row" },
+              flexDirection: {
+                xs: "column",
+                sm: "row",
+                width: "100%",
+              },
             }}
             noValidate
             autoComplete="off"
           >
             <TextField
+              fullWidth
               id="name"
               label="Name"
               required
               variant="outlined"
               size="small"
               name="name"
-              value={inputValue?.name || ""}
-              onChange={handleChange}
-              sx={{ flexGrow: 1, my: 0.5 }}
-            />
-            <TextField
-              id="email"
-              label="Email"
-              required
-              variant="outlined"
-              size="small"
-              name="email"
-              value={inputValue?.email || ""}
-              onChange={handleChange}
-              sx={{ flexGrow: 1, my: 0.5 }}
-            />
-            <TextField
-              id="contact"
-              label="Contact"
-              variant="outlined"
-              required
-              size="small"
-              name="contact"
-              value={inputValue?.contact || ""}
-              onChange={handleChange}
-              sx={{ flexGrow: 1, my: 0.5 }}
-            />
-            <TextField
-              id="salary"
-              label="Salary"
-              variant="outlined"
-              required
-              size="small"
-              name="salary"
-              type="number"
-              value={inputValue?.salary || ""}
-              onChange={handleChange}
+              value={course}
+              onChange={(e) => setCourse(e.target.value)}
               sx={{ flexGrow: 1, my: 0.5 }}
             />
           </Box>
@@ -130,4 +94,4 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
   );
 };
 
-export default AddTeacher;
+export default AddCourse;

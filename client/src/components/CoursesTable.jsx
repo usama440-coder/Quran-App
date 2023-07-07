@@ -8,7 +8,7 @@ import {
   Paper,
 } from "@mui/material";
 
-const TeachersTable = ({ teachersData }) => {
+const CoursesTable = ({ courseData }) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: "600px" }} aria-label="simple table">
@@ -20,28 +20,20 @@ const TeachersTable = ({ teachersData }) => {
           >
             <TableCell sx={{ color: "#ffffff" }}>Name</TableCell>
             <TableCell sx={{ color: "#ffffff" }} align="right">
-              Email
-            </TableCell>
-            <TableCell sx={{ color: "#ffffff" }} align="right">
-              Contact
-            </TableCell>
-            <TableCell sx={{ color: "#ffffff" }} align="right">
-              Salary
+              Students
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {teachersData?.map((teacher) => (
+          {courseData?.map((course) => (
             <TableRow
-              key={teacher?.email}
+              key={course?._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {teacher?.name}
+                {course?.name?.toUpperCase()}
               </TableCell>
-              <TableCell align="right">{teacher?.email}</TableCell>
-              <TableCell align="right">{teacher?.contact}</TableCell>
-              <TableCell align="right">{teacher?.salary}</TableCell>
+              <TableCell align="right">{10}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -50,4 +42,4 @@ const TeachersTable = ({ teachersData }) => {
   );
 };
 
-export default TeachersTable;
+export default CoursesTable;

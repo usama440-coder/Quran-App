@@ -15,10 +15,16 @@ const addCourse = asyncHandler(async (req, res) => {
   }
 
   // course exists
-  const isExists = await Course.findOne({ name });
+  const isExists = await Course.findOne({ name: name.toLowerCase() });
   if (isExists) {
     res.status(400);
     throw new Error("Course already exists");
+  }
+
+  // course length should be atleast 4 characters
+  if (name.length < 4) {
+    res.status(400);
+    throw new Error("Course name should be atleast 4 characters");
   }
 
   const course = await Course.create({ name });

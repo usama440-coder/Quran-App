@@ -15,6 +15,7 @@ import {
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
+import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 
@@ -36,6 +37,11 @@ const links = [
     text: "Teachers",
     path: "/teachers",
     icon: <PeopleOutlinedIcon />,
+  },
+  {
+    text: "Courses",
+    path: "/courses",
+    icon: <LibraryBooksOutlinedIcon />,
   },
   {
     text: "Fee",

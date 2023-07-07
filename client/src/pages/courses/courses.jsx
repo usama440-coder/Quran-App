@@ -1,13 +1,18 @@
-import { useState, useEffect } from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
-import LinearProgress from "@mui/material/LinearProgress";
-import TeachersTable from "../../components/TeachersTable";
-import AddTeacher from "../../components/AddTeacher";
-import teacherService from "../../services/teacherService";
+import {
+  Typography,
+  Container,
+  Box,
+  Button,
+  LinearProgress,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import AddCourse from "../../components/AddCourse";
+import CoursesTable from "../../components/CoursesTable";
+import courseService from "../../services/courseService";
 
-const Teachers = () => {
+const Courses = () => {
   const [open, setOpen] = useState(false);
-  const [teachersData, setTeachersData] = useState([]);
+  const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const handleClose = () => {
@@ -18,8 +23,8 @@ const Teachers = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await teacherService.getTeachers();
-        setTeachersData(res?.data?.teachers || []);
+        const res = await courseService.getCourses();
+        setCourseData(res?.data?.courses || []);
       } catch (error) {
         console.log(error);
       }
@@ -31,10 +36,10 @@ const Teachers = () => {
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>
-      <AddTeacher
+      <AddCourse
         open={open}
         handleClose={handleClose}
-        teachersData={teachersData}
+        courseData={courseData}
       />
       <Box
         sx={{
@@ -44,20 +49,21 @@ const Teachers = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h5">Teachers</Typography>
+        <Typography variant="h5">Courses</Typography>
         <Button variant="contained" onClick={() => setOpen(true)}>
           + Add New
         </Button>
       </Box>
+
       {loading ? (
         <LinearProgress />
-      ) : teachersData.length === 0 ? (
+      ) : courseData.length === 0 ? (
         <Typography variant="p">No course found</Typography>
       ) : (
-        <TeachersTable teachersData={teachersData} />
+        <CoursesTable courseData={courseData} />
       )}
     </Container>
   );
 };
 
-export default Teachers;
+export default Courses;
