@@ -19,6 +19,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     teacher,
     course,
     afterTwelve,
+    fee,
   } = req.body;
 
   // check required Fields
@@ -30,6 +31,7 @@ const registerStudent = asyncHandler(async (req, res) => {
       age,
       skype,
       country,
+      fee,
       teacher,
       course
     )
@@ -54,6 +56,12 @@ const registerStudent = asyncHandler(async (req, res) => {
   if (age < 0) {
     res.status(400);
     throw new Error("Invalid age value");
+  }
+
+  // check fee
+  if (fee < 0) {
+    res.status(400);
+    throw new Error("Invalid fee value");
   }
 
   // student exists
@@ -89,6 +97,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     teacher,
     course,
     afterTwelve,
+    fee,
   });
 
   res.status(201).json({ success: true, student });

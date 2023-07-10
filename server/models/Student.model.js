@@ -38,6 +38,10 @@ const StudentSchema = mongoose.Schema(
       ref: "Teacher",
       required: [true, "Teacher is required"],
     },
+    fee: {
+      type: Number,
+      required: true,
+    },
     afterTwelve: {
       type: Boolean,
       default: false,

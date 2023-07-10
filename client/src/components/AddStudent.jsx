@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextField,
   Box,
@@ -15,6 +15,10 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { countries } from "../utils/country";
+import teacherService from "../services/teacherService";
+import courseService from "../services/courseService";
+import studentService from "../services/studentService";
+import { useSnackbar } from "notistack";
 
 const style = {
   position: "absolute",
@@ -35,6 +39,24 @@ const AddStudent = ({ open, handleClose }) => {
   const [country, setCountry] = useState(countries[0]);
   const [inputValue, setInputValue] = useState({});
   const [checked, setChecked] = useState(false);
+  const [teachers, setTeachers] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const teachersData = await teacherService.getTeachers();
+        const coursesData = await courseService.getCourses();
+        setTeachers(teachersData?.data?.teachers || []);
+        setCourses(coursesData?.data?.courses || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -46,8 +68,22 @@ const AddStudent = ({ open, handleClose }) => {
     setChecked(e.target.checked);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const res = await studentService.registerStudent({
+        ...inputValue,
+        country: country.label,
+        afterTwelve: checked,
+      });
+      enqueueSnackbar("Student Added Successfully", { variant: "success" });
+      setInputValue({});
+    } catch (error) {
+      enqueueSnackbar(
+        error?.response?.data?.message || "Student could not be added",
+        { variant: "error" }
+      );
+    }
   };
 
   return (
@@ -73,6 +109,7 @@ const AddStudent = ({ open, handleClose }) => {
             autoComplete="off"
           >
             <TextField
+              required
               id="name"
               label="Name"
               variant="outlined"
@@ -83,6 +120,7 @@ const AddStudent = ({ open, handleClose }) => {
               sx={{ flexGrow: 1, my: 0.5 }}
             />
             <TextField
+              required
               id="email"
               label="Email"
               variant="outlined"
@@ -93,6 +131,7 @@ const AddStudent = ({ open, handleClose }) => {
               sx={{ flexGrow: 1, my: 0.5 }}
             />
             <TextField
+              required
               id="contactOne"
               label="Contact 1"
               variant="outlined"
@@ -113,6 +152,7 @@ const AddStudent = ({ open, handleClose }) => {
               sx={{ flexGrow: 1, my: 0.5 }}
             />
             <TextField
+              required
               type="number"
               id="Age"
               label="Age"
@@ -124,6 +164,20 @@ const AddStudent = ({ open, handleClose }) => {
               sx={{ flexGrow: 1, my: 0.5 }}
             />
             <TextField
+              required
+              type="fee"
+              id="Fee"
+              label="Fee"
+              variant="outlined"
+              size="small"
+              name="fee"
+              value={inputValue?.fee || ""}
+              onChange={handleChange}
+              sx={{ flexGrow: 1, my: 0.5 }}
+            />
+            <TextField
+              required
+              fullWidth
               id="Skype"
               label="Skype"
               variant="outlined"
@@ -134,6 +188,7 @@ const AddStudent = ({ open, handleClose }) => {
               sx={{ flexGrow: 1, my: 0.5 }}
             />
             <Autocomplete
+              required
               size="small"
               id="country-select-demo"
               sx={{ flexGrow: 1, my: 0.5 }}
@@ -175,7 +230,7 @@ const AddStudent = ({ open, handleClose }) => {
               )}
             />
           </Box>
-          <FormControl fullWidth size="small" sx={{ my: 1 }}>
+          <FormControl required fullWidth size="small" sx={{ my: 1 }}>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -185,13 +240,17 @@ const AddStudent = ({ open, handleClose }) => {
               onChange={handleChange}
               value={inputValue?.teacher || ""}
             >
-              <MenuItem value={"Naeem Akhtar"}>Dr. Naeem Akhtar</MenuItem>
-              <MenuItem value={"Irfan Hameed"}>Irfan Hameed</MenuItem>
-              <MenuItem value={"Aneela Zameer"}>Dr. Aneela Zameer</MenuItem>
+              {teachers?.map((teacher) => {
+                return (
+                  <MenuItem key={teacher?._id} value={teacher?._id}>
+                    {teacher?.name}
+                  </MenuItem>
+                );
+              })}
             </Select>
             <InputLabel id="demo-simple-select-label">Teacher</InputLabel>
           </FormControl>
-          <FormControl fullWidth size="small" sx={{ my: 1 }}>
+          <FormControl required fullWidth size="small" sx={{ my: 1 }}>
             <Select
               labelId="course-lable"
               id="course-select"
@@ -201,9 +260,13 @@ const AddStudent = ({ open, handleClose }) => {
               onChange={handleChange}
               value={inputValue?.course || ""}
             >
-              <MenuItem value={"Course 1"}>Course 1</MenuItem>
-              <MenuItem value={"Course 2"}>Course 2</MenuItem>
-              <MenuItem value={"Course 3"}>Course 3</MenuItem>
+              {courses?.map((course) => {
+                return (
+                  <MenuItem key={course?._id} value={course?._id}>
+                    {course?.name}
+                  </MenuItem>
+                );
+              })}
             </Select>
             <InputLabel id="course-select">Course</InputLabel>
           </FormControl>

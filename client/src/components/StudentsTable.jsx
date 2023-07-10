@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -6,56 +7,15 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
 } from "@mui/material";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
-const createData = (name, email, contact, country, joining, teacher) => {
-  return { name, email, contact, country, joining, teacher };
-};
+const StudentsTable = ({ students }) => {
+  const navigate = useNavigate();
 
-const rows = [
-  createData(
-    "Usman Asad",
-    "usman1@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman2@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman3@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman4@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-  createData(
-    "Usman Asad",
-    "usman5@gmail.com",
-    "03404403600",
-    "Pakistan",
-    "May 13, 2023",
-    "Naeem Akhtar"
-  ),
-];
-
-const StudentsTable = () => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: "600px" }} aria-label="simple table">
@@ -76,27 +36,43 @@ const StudentsTable = () => {
               Country
             </TableCell>
             <TableCell sx={{ color: "#ffffff" }} align="right">
-              Joining
+              Fee
             </TableCell>
             <TableCell sx={{ color: "#ffffff" }} align="right">
-              Teacher
+              Action
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows?.map((row) => (
+          {students?.map((student) => (
             <TableRow
-              key={row.email}
+              key={student?._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {student?.name}
               </TableCell>
-              <TableCell align="right">{row.email}</TableCell>
-              <TableCell align="right">{row.contact}</TableCell>
-              <TableCell align="right">{row.country}</TableCell>
-              <TableCell align="right">{row.joining}</TableCell>
-              <TableCell align="right">{row.teacher}</TableCell>
+              <TableCell align="right">{student?.email}</TableCell>
+              <TableCell align="right">{student?.contactOne}</TableCell>
+              <TableCell align="right">{student?.country}</TableCell>
+              <TableCell align="right">{student?.fee}</TableCell>
+              <TableCell align="right">
+                <IconButton size="small">
+                  <ModeEditOutlineOutlinedIcon
+                    fontSize="small"
+                    color="success"
+                  />
+                </IconButton>
+                <IconButton size="small">
+                  <DeleteOutlineOutlinedIcon fontSize="small" color="error" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => navigate(`/student/${student?._id}`)}
+                >
+                  <VisibilityOutlinedIcon fontSize="small" color="warning" />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

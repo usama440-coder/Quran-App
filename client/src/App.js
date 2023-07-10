@@ -9,6 +9,7 @@ import Login from "./pages/login/login";
 import Layout from "./components/Layout";
 import { useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Student from "./pages/student/student";
 
 const theme = createTheme({
   palette: {
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/teachers" element={<Teachers />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/fee" element={<Fee />} />
+                <Route path="/student/:id" element={<Student />} />
               </Routes>
             </Layout>
           ) : (
