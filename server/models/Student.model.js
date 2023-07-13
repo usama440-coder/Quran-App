@@ -40,7 +40,15 @@ const StudentSchema = mongoose.Schema(
     },
     fee: {
       type: Number,
-      required: true,
+      required: [true, "Fee is reqiuired"],
+    },
+    skype: {
+      type: String,
+      required: [true, "Skype is required"],
+    },
+    age: {
+      type: Number,
+      required: [true, "Age is required"],
     },
     afterTwelve: {
       type: Boolean,

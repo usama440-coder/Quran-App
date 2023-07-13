@@ -12,10 +12,20 @@ const getStudent = (id) => {
   return http.get(`/student/${id}`);
 };
 
+const updateStudent = (id, data) => {
+  return http.put(`/student/${id}`, data);
+};
+
+const deleteStudent = (id) => {
+  return http.delete(`/student/${id}`);
+};
+
 const studentService = {
   registerStudent,
   getStudents,
   getStudent,
+  updateStudent,
+  deleteStudent,
 };
 
 export default studentService;

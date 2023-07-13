@@ -29,8 +29,12 @@ const Students = () => {
   }, []);
 
   return (
-    <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>
-      <AddStudent open={open} handleClose={handleClose} />
+    <Container maxWidth="lg" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>
+      <AddStudent
+        open={open}
+        handleClose={handleClose}
+        studentsData={students}
+      />
       <Box
         sx={{
           display: "flex",
@@ -44,7 +48,14 @@ const Students = () => {
           + Add New
         </Button>
       </Box>
-      {loading ? <LinearProgress /> : <StudentsTable students={students} />}
+
+      {loading ? (
+        <LinearProgress />
+      ) : students.length === 0 ? (
+        <Typography variant="p">No student found</Typography>
+      ) : (
+        <StudentsTable students={students} setStudents={setStudents} />
+      )}
     </Container>
   );
 };

@@ -12,13 +12,44 @@ import {
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditStudent from "./EditStudentModal";
+import DeleteStudent from "./DeleteStudent";
+import { useState } from "react";
 
-const StudentsTable = ({ students }) => {
+const StudentsTable = ({ students, setStudents }) => {
+  const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
   const navigate = useNavigate();
+  const [currStudent, setCurrStudent] = useState({});
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = (student) => {
+    setCurrStudent(student);
+    setOpen(true);
+  };
+
+  const handleCloseDelete = (student) => {
+    setCurrStudent(student);
+    setOpenDelete(!openDelete);
+  };
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: "600px" }} aria-label="simple table">
+      <EditStudent
+        open={open}
+        handleClose={handleClose}
+        student={currStudent}
+      />
+      <DeleteStudent
+        open={openDelete}
+        handleCloseDelete={handleCloseDelete}
+        student={currStudent}
+        setStudents={setStudents}
+      />
+      <Table sx={{ minWidth: "600px" }} size="small" aria-label="simple table">
         <TableHead>
           <TableRow
             sx={{
@@ -57,13 +88,16 @@ const StudentsTable = ({ students }) => {
               <TableCell align="right">{student?.country}</TableCell>
               <TableCell align="right">{student?.fee}</TableCell>
               <TableCell align="right">
-                <IconButton size="small">
+                <IconButton size="small" onClick={() => handleOpen(student)}>
                   <ModeEditOutlineOutlinedIcon
                     fontSize="small"
                     color="success"
                   />
                 </IconButton>
-                <IconButton size="small">
+                <IconButton
+                  size="small"
+                  onClick={() => handleCloseDelete(student)}
+                >
                   <DeleteOutlineOutlinedIcon fontSize="small" color="error" />
                 </IconButton>
                 <IconButton

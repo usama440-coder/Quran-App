@@ -158,6 +158,7 @@ const updateStudent = asyncHandler(async (req, res) => {
     teacher,
     course,
     afterTwelve,
+    fee,
   } = req.body;
 
   // check student
@@ -185,6 +186,12 @@ const updateStudent = asyncHandler(async (req, res) => {
   if (age && age < 0) {
     res.status(400);
     throw new Error("Invalid age value");
+  }
+
+  // check fee
+  if (fee && fee < 0) {
+    res.status(400);
+    throw new Error("Invalid fee value");
   }
 
   //   check teacher

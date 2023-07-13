@@ -54,7 +54,10 @@ const Teachers = () => {
       ) : teachersData.length === 0 ? (
         <Typography variant="p">No course found</Typography>
       ) : (
-        <TeachersTable teachersData={teachersData} />
+        <TeachersTable
+          teachersData={teachersData}
+          setTeachers={setTeachersData}
+        />
       )}
     </Container>
   );

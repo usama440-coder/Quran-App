@@ -35,28 +35,51 @@ const style = {
   alignItems: "center",
 };
 
-const AddStudent = ({ open, handleClose, studentsData }) => {
+const EditStudent = ({ open, handleClose, student }) => {
   const [country, setCountry] = useState(countries[0]);
   const [inputValue, setInputValue] = useState({});
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(student?.afterTwelve || false);
   const [teachers, setTeachers] = useState([]);
   const [courses, setCourses] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    setInputValue({
+      name: student?.name,
+      email: student?.email,
+      contactOne: student?.contactOne,
+      contactTwo: student?.contactTwo,
+      age: student?.age,
+      fee: student?.fee,
+      skype: student?.skype,
+      course: student?.course,
+      teacher: student?.teacher,
+    });
+    setChecked(student?.afterTwelve);
+
+    // get country object
+    const getCountry = () => {
+      const countryObj = countries.find((item) => {
+        return item.label === student?.country;
+      });
+
+      setCountry(countryObj);
+    };
+
     const fetchData = async () => {
       try {
         const teachersData = await teacherService.getTeachers();
         const coursesData = await courseService.getCourses();
         setTeachers(teachersData?.data?.teachers || []);
         setCourses(coursesData?.data?.courses || []);
+        getCountry();
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [student]);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -71,18 +94,17 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await studentService.registerStudent({
+      await studentService.updateStudent(student?._id, {
         ...inputValue,
         country: country.label,
         afterTwelve: checked,
       });
 
-      enqueueSnackbar("Student Added Successfully", { variant: "success" });
+      enqueueSnackbar("Student Updated Successfully", { variant: "success" });
       setInputValue({});
-      studentsData.push(res?.data?.student);
     } catch (error) {
       enqueueSnackbar(
-        error?.response?.data?.message || "Student could not be added",
+        error?.response?.data?.message || "Student could not be updated",
         { variant: "error" }
       );
     }
@@ -94,7 +116,7 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
         <Box sx={style}>
           <Box sx={{ mb: 1 }}>
             <Typography variant="h6" textAlign="center">
-              Add Student
+              Edit Student
             </Typography>
             <img src="/img/underline.png" alt="text-underline" width={200} />
           </Box>
@@ -274,6 +296,7 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
           </FormControl>
           <FormGroup>
             <FormControlLabel
+              value={checked}
               control={
                 <Checkbox
                   name="afterTwelve"
@@ -291,7 +314,7 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
             sx={{ mt: 2 }}
             onClick={handleSubmit}
           >
-            Add
+            Save
           </Button>
         </Box>
       </Modal>
@@ -299,4 +322,4 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
   );
 };
 
-export default AddStudent;
+export default EditStudent;

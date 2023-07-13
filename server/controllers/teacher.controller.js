@@ -1,4 +1,5 @@
 const Teacher = require("../models/Teacher.model");
+const Student = require("../models/Student.model");
 const asyncHandler = require("express-async-handler");
 const { requiredFields, checkName, checkEmail } = require("../utils/validator");
 
@@ -78,7 +79,16 @@ const getTeacher = asyncHandler(async (req, res) => {
     throw new Error("Teacher not found");
   }
 
-  res.status(200).json({ success: true, teacher });
+  // total students
+  const totalStudents = await Student.find({ teacher: req.params.id }).count();
+
+  // get students
+  const students = await Student.find({ teacher: req.params.id }).select({
+    name: 1,
+    email: 1,
+  });
+
+  res.status(200).json({ success: true, teacher, students, totalStudents });
 });
 
 // @desc    Delete a teacher
@@ -91,6 +101,9 @@ const deleteTeacher = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Teacher not found");
   }
+
+  // delete students belonging to this teacher
+  await Student.deleteMany({ teacher: req.params.id });
 
   // delete
   const deleted = await Teacher.deleteOne({ _id: req.params.id });

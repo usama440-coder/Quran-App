@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import { useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Student from "./pages/student/student";
+import Teacher from "./pages/teacher/teacher";
 
 const theme = createTheme({
   palette: {
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/fee" element={<Fee />} />
                 <Route path="/student/:id" element={<Student />} />
+                <Route path="/teacher/:id" element={<Teacher />} />
               </Routes>
             </Layout>
           ) : (

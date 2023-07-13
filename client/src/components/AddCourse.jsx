@@ -86,7 +86,7 @@ const AddCourse = ({ open, handleClose, courseData }) => {
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? <span>Loading...</span> : <span>Save</span>}
+            {loading ? <span>Loading...</span> : <span>Add</span>}
           </Button>
         </Box>
       </Modal>

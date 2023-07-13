@@ -1,4 +1,5 @@
 import { Box, Button, Container, Paper, Typography } from "@mui/material";
+import Chip from "@mui/material/Chip";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -65,6 +66,15 @@ const Student = () => {
       ) : (
         <Box>
           <Paper sx={{ p: 2 }}>
+            {student?.afterTwelve === true && (
+              <Chip
+                sx={{ mb: "10px" }}
+                label="After 12"
+                color="primary"
+                size="small"
+              />
+            )}
+
             <table>
               <tbody>
                 <tr>
@@ -113,6 +123,24 @@ const Student = () => {
                   </td>
                   <td>
                     <Typography variant="subtitle2">{student?.fee}</Typography>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={tableStyle}>
+                    <Typography variant="subtitle1">Age:</Typography>
+                  </td>
+                  <td>
+                    <Typography variant="subtitle2">{student?.age}</Typography>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={tableStyle}>
+                    <Typography variant="subtitle1">Skype:</Typography>
+                  </td>
+                  <td>
+                    <Typography variant="subtitle2">
+                      {student?.skype}
+                    </Typography>
                   </td>
                 </tr>
                 <tr>

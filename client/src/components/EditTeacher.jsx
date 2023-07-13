@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
 import teacherService from "../services/teacherService";
 import { useSnackbar } from "notistack";
@@ -18,7 +18,7 @@ const style = {
   alignItems: "center",
 };
 
-const AddTeacher = ({ open, handleClose, teachersData }) => {
+const EditTeacher = ({ open, handleClose, teacher }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [inputValue, setInputValue] = useState({});
   const [loading, setLoading] = useState(false);
@@ -30,17 +30,20 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
     setInputValue((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(() => {
+    setInputValue(teacher);
+  }, [teacher]);
+
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
     try {
-      const res = await teacherService.registerTeacher(inputValue);
-      enqueueSnackbar("Teacher added successfully", { variant: "success" });
-      teachersData.push(res?.data?.teacher);
+      await teacherService.updateTeacher(teacher?._id, inputValue);
+      enqueueSnackbar("Teacher updated successfully", { variant: "success" });
       setInputValue({});
     } catch (error) {
       enqueueSnackbar(
-        error?.response?.data?.message || "Teacher could not be added",
+        error?.response?.data?.message || "Teacher could not be updated",
         { variant: "error" }
       );
     }
@@ -53,7 +56,7 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
         <Box sx={style}>
           <Box sx={{ mb: 1 }}>
             <Typography variant="h6" textAlign="center">
-              Add Teacher
+              Edit Teacher
             </Typography>
             <img src="/img/underline.png" alt="text-underline" width={200} />
           </Box>
@@ -122,7 +125,7 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? <span>Loading...</span> : <span>Add</span>}
+            {loading ? <span>Loading...</span> : <span>Save</span>}
           </Button>
         </Box>
       </Modal>
@@ -130,4 +133,4 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
   );
 };
 
-export default AddTeacher;
+export default EditTeacher;
