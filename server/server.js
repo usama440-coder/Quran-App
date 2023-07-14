@@ -7,6 +7,7 @@ const adminRouter = require("./routes/admin.route");
 const teacherRouter = require("./routes/teacher.route");
 const studentRouter = require("./routes/student.route");
 const courseRouter = require("./routes/course.route");
+const statsRouter = require("./routes/stats.route");
 require("dotenv").config();
 
 // middleware
@@ -18,6 +19,7 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/teacher", teacherRouter);
 app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/course", courseRouter);
+app.use("/api/v1/stats", statsRouter);
 
 // error handler
 app.use(errorHandler);

@@ -6,12 +6,45 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
 } from "@mui/material";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditCourse from "./EditCourse";
+import DeleteCourse from "./DeleteCourse";
+import { useState } from "react";
 
-const CoursesTable = ({ courseData }) => {
+const CoursesTable = ({ courseData, setCourseData }) => {
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [currCourse, setCurrCourse] = useState({});
+
+  const handleEdit = (course) => {
+    setCurrCourse(course);
+    setOpenEdit(!openEdit);
+  };
+
+  const handleDelete = (course) => {
+    setCurrCourse(course);
+    setOpenDelete(!openDelete);
+  };
+
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: "600px" }} aria-label="simple table">
+      <EditCourse
+        open={openEdit}
+        handleClose={handleEdit}
+        courseData={currCourse}
+      />
+
+      <DeleteCourse
+        open={openDelete}
+        handleDelete={handleDelete}
+        course={currCourse}
+        setCourseData={setCourseData}
+      />
+
+      <Table sx={{ minWidth: "600px" }} size="small" aria-label="simple table">
         <TableHead>
           <TableRow
             sx={{
@@ -21,6 +54,9 @@ const CoursesTable = ({ courseData }) => {
             <TableCell sx={{ color: "#ffffff" }}>Name</TableCell>
             <TableCell sx={{ color: "#ffffff" }} align="right">
               Students
+            </TableCell>
+            <TableCell sx={{ color: "#ffffff" }} align="right">
+              Action
             </TableCell>
           </TableRow>
         </TableHead>
@@ -34,6 +70,17 @@ const CoursesTable = ({ courseData }) => {
                 {course?.name?.toUpperCase()}
               </TableCell>
               <TableCell align="right">{10}</TableCell>
+              <TableCell align="right">
+                <IconButton size="small" onClick={() => handleEdit(course)}>
+                  <ModeEditOutlineOutlinedIcon
+                    fontSize="small"
+                    color="success"
+                  />
+                </IconButton>
+                <IconButton size="small" onClick={() => handleDelete(course)}>
+                  <DeleteOutlineOutlinedIcon fontSize="small" color="error" />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

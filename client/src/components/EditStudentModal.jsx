@@ -217,7 +217,7 @@ const EditStudent = ({ open, handleClose, student }) => {
               id="country-select-demo"
               sx={{ flexGrow: 1, my: 0.5 }}
               options={countries}
-              value={country}
+              value={country || countries[0]}
               name="country"
               onChange={(event, newValue) => {
                 setCountry(newValue);
@@ -301,7 +301,7 @@ const EditStudent = ({ open, handleClose, student }) => {
                 <Checkbox
                   name="afterTwelve"
                   onChange={handleChecked}
-                  checked={checked}
+                  checked={checked || false}
                 />
               }
               label="After 12 AM"

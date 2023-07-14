@@ -60,7 +60,7 @@ const Courses = () => {
       ) : courseData.length === 0 ? (
         <Typography variant="p">No course found</Typography>
       ) : (
-        <CoursesTable courseData={courseData} />
+        <CoursesTable courseData={courseData} setCourseData={setCourseData} />
       )}
     </Container>
   );

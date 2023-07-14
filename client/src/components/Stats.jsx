@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 
-const Stats = ({ number, desc, colorContent, colorIconBack, colorBack }) => {
+const Stats = ({ number, desc, colorContent, colorBack, icon }) => {
   return (
     <Box
       sx={{
@@ -22,14 +21,7 @@ const Stats = ({ number, desc, colorContent, colorIconBack, colorBack }) => {
         </Typography>
         <Typography variant="body2">{desc}</Typography>
       </Box>
-      <PeopleOutlineOutlinedIcon
-        sx={{
-          fontSize: 40,
-          backgroundColor: colorIconBack,
-          p: 1,
-          borderRadius: 50,
-        }}
-      />
+      {icon}
     </Box>
   );
 };

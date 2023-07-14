@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { requiredFields } = require("../utils/validator");
 const Course = require("../models/Course.model");
+const Student = require("../models/Student.model");
 
 // @desc    Add a course
 // @route   POST /api/v1/course
@@ -66,6 +67,9 @@ const deleteCourse = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Course not found");
   }
+
+  // delete student belonging to this course
+  await Student.deleteMany({ course: req.params.id });
 
   const deleted = await Course.deleteOne({ _id: req.params.id });
   res.status(200).json({ success: true, deleted });
