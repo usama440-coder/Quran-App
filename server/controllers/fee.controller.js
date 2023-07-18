@@ -63,7 +63,7 @@ const addFee = asyncHandler(async (req, res) => {
 // @access  Admin
 const addFeeSingleStudent = asyncHandler(async (req, res) => {
   const { date } = req.body;
-  const _id = req.params.id;
+  const email = req.params.id;
 
   // chech date is given
   if (!requiredFields(date)) {
@@ -79,7 +79,7 @@ const addFeeSingleStudent = asyncHandler(async (req, res) => {
   feeDate.setDate(1);
 
   // get student
-  const student = await Student.findOne({ _id });
+  const student = await Student.findOne({ email });
   if (!student) {
     res.status(404);
     throw new Error("Student not found");
@@ -94,7 +94,7 @@ const addFeeSingleStudent = asyncHandler(async (req, res) => {
   if (!isExists) {
     const fee = await Fee.create({
       date: feeDate,
-      amount: student.amount,
+      amount: student.fee,
       student: student._id,
     });
     return res.status(201).json({ success: true, fee });
@@ -110,7 +110,32 @@ const addFeeSingleStudent = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/fee/
 // @access  Admin
 const getFee = asyncHandler(async (req, res) => {
-  const fee = await Fee.find({});
+  const fee = await Fee.aggregate([
+    {
+      $lookup: {
+        from: "students",
+        localField: "student",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    {
+      $unwind: {
+        path: "$student",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        date: 1,
+        amount: 1,
+        isPaid: 1,
+        studentId: "$student._id",
+        studentName: "$student.name",
+        studentEmail: "$student.email",
+      },
+    },
+  ]);
   res.status(200).json({ success: true, fee });
 });
 
@@ -120,13 +145,18 @@ const getFee = asyncHandler(async (req, res) => {
 const getFeeSingleStudent = asyncHandler(async (req, res) => {
   const fee = await Fee.findOne({ _id: req.params.id });
 
+  // get student
+  const student = await Student.findOne({ _id: fee.student }).select(
+    "email name"
+  );
+
   // fee exists
   if (!fee) {
     res.status(404);
     throw new Error("Fee does not exist");
   }
 
-  res.status(200).json({ success: true, fee });
+  res.status(200).json({ success: true, fee, student });
 });
 
 // @desc    Update a fee

@@ -69,7 +69,7 @@ const CoursesTable = ({ courseData, setCourseData }) => {
               <TableCell component="th" scope="row">
                 {course?.name?.toUpperCase()}
               </TableCell>
-              <TableCell align="right">{10}</TableCell>
+              <TableCell align="right">{course?.numOfStudents}</TableCell>
               <TableCell align="right">
                 <IconButton size="small" onClick={() => handleEdit(course)}>
                   <ModeEditOutlineOutlinedIcon

@@ -37,7 +37,27 @@ const addCourse = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/course
 // @access  Admin
 const getCourses = asyncHandler(async (req, res) => {
-  const courses = await Course.find({});
+  const courses = await Course.aggregate([
+    {
+      $lookup: {
+        from: "students",
+        localField: "_id",
+        foreignField: "course",
+        as: "students",
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        numOfStudents: {
+          $size: "$students",
+        },
+      },
+    },
+  ]);
 
   res.status(200).json({ success: true, courses });
 });
