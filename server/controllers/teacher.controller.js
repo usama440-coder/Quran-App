@@ -62,9 +62,16 @@ const registerTeacher = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/teacher
 // @access  Admin
 const getTeachers = asyncHandler(async (req, res) => {
-  const teachers = await Teacher.find({});
+  // query paramteres
+  const page = parseInt(req.query.page || "0");
+  const pageSize = parseInt(req.query.pageSize || "25");
+  const total = await Teacher.countDocuments({});
 
-  res.status(201).json({ success: true, teachers });
+  const teachers = await Teacher.find({})
+    .skip(page * pageSize)
+    .limit(pageSize);
+
+  res.status(201).json({ success: true, teachers, totalPages: total });
 });
 
 // @desc    Get a single teacher

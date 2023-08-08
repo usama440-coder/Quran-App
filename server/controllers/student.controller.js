@@ -107,9 +107,16 @@ const registerStudent = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/student
 // @access  Admin
 const getStudents = asyncHandler(async (req, res) => {
-  const students = await Student.find({});
+  // query paramteres
+  const page = parseInt(req.query.page || "0");
+  const pageSize = parseInt(req.query.pageSize || "25");
+  const total = await Student.countDocuments({});
 
-  res.status(201).json({ success: true, students });
+  const students = await Student.find({})
+    .skip(page * pageSize)
+    .limit(pageSize);
+
+  res.status(201).json({ success: true, students, totalPages: total });
 });
 
 // @desc    Get a single student

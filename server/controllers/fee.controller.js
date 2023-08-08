@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { requiredFields } = require("../utils/validator");
 const Fee = require("../models/Fee.model");
 const Student = require("../models/Student.model");
+const { mongoose } = require("mongoose");
 
 // @desc    Add a fee
 // @route   POST /api/v1/fee
@@ -110,33 +111,93 @@ const addFeeSingleStudent = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/fee/
 // @access  Admin
 const getFee = asyncHandler(async (req, res) => {
-  const fee = await Fee.aggregate([
-    {
-      $lookup: {
-        from: "students",
-        localField: "student",
-        foreignField: "_id",
-        as: "student",
+  // query paramteres
+  const page = parseInt(req.query.page || "0");
+  const pageSize = parseInt(req.query.pageSize || "25");
+  const email = req.query.email || "";
+  const total = await Fee.countDocuments({});
+  let fee;
+
+  if (email) {
+    // find student
+    const student = await Student.findOne({ email });
+    if (!student) {
+      res.status(404);
+      throw new Error("Student not found");
+    }
+    fee = await Fee.aggregate([
+      {
+        $match: {
+          student: new mongoose.Types.ObjectId(student?._id),
+        },
       },
-    },
-    {
-      $unwind: {
-        path: "$student",
+      {
+        $lookup: {
+          from: "students",
+          localField: "student",
+          foreignField: "_id",
+          as: "student",
+        },
       },
-    },
-    {
-      $project: {
-        _id: 1,
-        date: 1,
-        amount: 1,
-        isPaid: 1,
-        studentId: "$student._id",
-        studentName: "$student.name",
-        studentEmail: "$student.email",
+      {
+        $unwind: {
+          path: "$student",
+        },
       },
-    },
-  ]);
-  res.status(200).json({ success: true, fee });
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          amount: 1,
+          isPaid: 1,
+          studentId: "$student._id",
+          studentName: "$student.name",
+          studentEmail: "$student.email",
+        },
+      },
+      {
+        $skip: pageSize * page,
+      },
+      {
+        $limit: pageSize,
+      },
+    ]);
+  } else {
+    fee = await Fee.aggregate([
+      {
+        $lookup: {
+          from: "students",
+          localField: "student",
+          foreignField: "_id",
+          as: "student",
+        },
+      },
+      {
+        $unwind: {
+          path: "$student",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          date: 1,
+          amount: 1,
+          isPaid: 1,
+          studentId: "$student._id",
+          studentName: "$student.name",
+          studentEmail: "$student.email",
+        },
+      },
+      {
+        $skip: pageSize * page,
+      },
+      {
+        $limit: pageSize,
+      },
+    ]);
+  }
+
+  res.status(200).json({ success: true, fee, totalPages: total });
 });
 
 // @desc    Get a single fee

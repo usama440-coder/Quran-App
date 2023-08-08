@@ -37,6 +37,11 @@ const addCourse = asyncHandler(async (req, res) => {
 // @route   GET /api/v1/course
 // @access  Admin
 const getCourses = asyncHandler(async (req, res) => {
+  // query paramteres
+  const page = parseInt(req.query.page || "0");
+  const pageSize = parseInt(req.query.pageSize || "25");
+  const total = await Course.countDocuments({});
+
   const courses = await Course.aggregate([
     {
       $lookup: {
@@ -57,9 +62,15 @@ const getCourses = asyncHandler(async (req, res) => {
         },
       },
     },
+    {
+      $skip: pageSize * page,
+    },
+    {
+      $limit: pageSize,
+    },
   ]);
 
-  res.status(200).json({ success: true, courses });
+  res.status(200).json({ success: true, courses, totalPages: total });
 });
 
 // @desc    Get single course
