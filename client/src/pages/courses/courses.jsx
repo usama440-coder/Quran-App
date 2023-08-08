@@ -9,22 +9,36 @@ import { useEffect, useState } from "react";
 import AddCourse from "../../components/AddCourse";
 import CoursesTable from "../../components/CoursesTable";
 import courseService from "../../services/courseService";
+import TablePagination from "@mui/material/TablePagination";
 
 const Courses = () => {
   const [open, setOpen] = useState(false);
   const [courseData, setCourseData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(10);
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await courseService.getCourses();
+        const res = await courseService.getCourses(page, rowsPerPage);
         setCourseData(res?.data?.courses || []);
+        setTotalPages(res?.data?.totalPages || 0);
       } catch (error) {
         console.log(error);
       }
@@ -32,7 +46,7 @@ const Courses = () => {
     };
 
     fetchData();
-  }, []);
+  }, [page, rowsPerPage]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>
@@ -60,7 +74,18 @@ const Courses = () => {
       ) : courseData.length === 0 ? (
         <Typography variant="p">No course found</Typography>
       ) : (
-        <CoursesTable courseData={courseData} setCourseData={setCourseData} />
+        <>
+          <CoursesTable courseData={courseData} setCourseData={setCourseData} />
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 100]}
+            component="div"
+            count={totalPages}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
       )}
     </Container>
   );

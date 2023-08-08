@@ -4,8 +4,8 @@ const registerCourse = (data) => {
   return http.post("/course", data);
 };
 
-const getCourses = () => {
-  return http.get("/course");
+const getCourses = (page, pageSize) => {
+  return http.get(`/course?page=${page}&pageSize=${pageSize}`);
 };
 
 const getCourse = (id) => {

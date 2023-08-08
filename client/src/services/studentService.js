@@ -4,8 +4,8 @@ const registerStudent = (data) => {
   return http.post("/student", data);
 };
 
-const getStudents = () => {
-  return http.get("/student");
+const getStudents = (page, pageSize) => {
+  return http.get(`/student?page=${page}&pageSize=${pageSize}`);
 };
 
 const getStudent = (id) => {

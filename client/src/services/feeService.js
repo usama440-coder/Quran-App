@@ -8,8 +8,8 @@ const addFeeSingleStudent = (id, data) => {
   return http.post(`/fee/${id}`, data);
 };
 
-const getFees = () => {
-  return http.get("/fee");
+const getFees = (page, pageSize, email) => {
+  return http.get(`/fee?page=${page}&pageSize=${pageSize}&email=${email}`);
 };
 
 const getFee = (id) => {

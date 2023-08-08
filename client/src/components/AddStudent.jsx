@@ -47,7 +47,11 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
     const fetchData = async () => {
       try {
         const teachersData = await teacherService.getTeachers();
-        const coursesData = await courseService.getCourses();
+        const total = await courseService.getCourses(1, 25);
+        const coursesData = await courseService.getCourses(
+          0,
+          total?.data?.totalPages
+        );
         setTeachers(teachersData?.data?.teachers || []);
         setCourses(coursesData?.data?.courses || []);
       } catch (error) {

@@ -4,8 +4,8 @@ const registerTeacher = (data) => {
   return http.post("/teacher", data);
 };
 
-const getTeachers = () => {
-  return http.get("/teacher");
+const getTeachers = (page, pageSize) => {
+  return http.get(`/teacher?page=${page}&pageSize=${pageSize}`);
 };
 
 const getTeacher = (id) => {
