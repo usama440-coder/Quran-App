@@ -5,6 +5,7 @@ import statsService from "../../services/statsService";
 import { LinearProgress } from "@mui/material";
 import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
+import { useSelector } from "react-redux";
 
 const iconStyle = {
   fontSize: 40,
@@ -15,12 +16,13 @@ const iconStyle = {
 const Dashboard = () => {
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await statsService.getStats();
+        const res = await statsService.getStats(token);
         setStats({
           students: res?.data?.totalStudents,
           teachers: res?.data?.totalTeachers,
@@ -34,7 +36,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

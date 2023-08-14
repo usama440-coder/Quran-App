@@ -1,6 +1,7 @@
 const Admin = require("../models/Admin.model");
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
+const jwt = require("jsonwebtoken");
 const {
   requiredFields,
   checkEmail,
@@ -59,4 +60,43 @@ const registerAdmin = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, admin });
 });
 
-module.exports = { registerAdmin };
+// @desc    Login Admin
+// @route   POST /api/v1/admin/login
+// @access  Admin
+const loginAdmin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  // check required fields
+  if (!requiredFields(email, password)) {
+    res.status(400);
+    throw new Error("Please enter required fields");
+  }
+
+  // admin exists
+  const admin = await Admin.findOne({ email });
+  if (!admin) {
+    res.status(400);
+    throw new Error("Invalid credentials");
+  }
+
+  // token
+  if (admin && (await bcrypt.compare(password, admin.password))) {
+    // generate token
+    const token = jwt.sign(
+      {
+        id: admin._id.toString(),
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "5s",
+      }
+    );
+
+    res.status(200).json({ success: true, admin, token });
+  } else {
+    res.status(400);
+    throw new Error("Invalid credentials");
+  }
+});
+
+module.exports = { registerAdmin, loginAdmin };

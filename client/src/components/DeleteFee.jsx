@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, Typography, Modal, Button } from "@mui/material";
 import { useSnackbar } from "notistack";
 import feeService from "../services/feeService";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -21,12 +22,13 @@ const style = {
 const DeleteFee = ({ open, handleDelete, fee, setFeeData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await feeService.deleteFee(fee?._id);
+      await feeService.deleteFee(fee?._id, token);
       enqueueSnackbar("Fee deleted successfully", { variant: "success" });
       setFeeData((prev) => prev.filter((data) => data?._id !== fee?._id));
     } catch (error) {

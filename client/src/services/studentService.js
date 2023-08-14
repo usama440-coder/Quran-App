@@ -1,23 +1,43 @@
 import http from "../http-common";
 
-const registerStudent = (data) => {
-  return http.post("/student", data);
+const registerStudent = (data, token) => {
+  return http.post("/student", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-const getStudents = (page, pageSize) => {
-  return http.get(`/student?page=${page}&pageSize=${pageSize}`);
+const getStudents = (page, pageSize, token) => {
+  return http.get(`/student?page=${page}&pageSize=${pageSize}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-const getStudent = (id) => {
-  return http.get(`/student/${id}`);
+const getStudent = (id, token) => {
+  return http.get(`/student/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-const updateStudent = (id, data) => {
-  return http.put(`/student/${id}`, data);
+const updateStudent = (id, data, token) => {
+  return http.put(`/student/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
-const deleteStudent = (id) => {
-  return http.delete(`/student/${id}`);
+const deleteStudent = (id, token) => {
+  return http.delete(`/student/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 const studentService = {

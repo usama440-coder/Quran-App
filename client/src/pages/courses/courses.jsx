@@ -10,6 +10,7 @@ import AddCourse from "../../components/AddCourse";
 import CoursesTable from "../../components/CoursesTable";
 import courseService from "../../services/courseService";
 import TablePagination from "@mui/material/TablePagination";
+import { useSelector } from "react-redux";
 
 const Courses = () => {
   const [open, setOpen] = useState(false);
@@ -18,6 +19,7 @@ const Courses = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(10);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleClose = () => {
     setOpen(false);
@@ -36,7 +38,7 @@ const Courses = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await courseService.getCourses(page, rowsPerPage);
+        const res = await courseService.getCourses(page, rowsPerPage, token);
         setCourseData(res?.data?.courses || []);
         setTotalPages(res?.data?.totalPages || 0);
       } catch (error) {
@@ -46,7 +48,7 @@ const Courses = () => {
     };
 
     fetchData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, token]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

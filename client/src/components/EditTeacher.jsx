@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
 import teacherService from "../services/teacherService";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -22,6 +23,7 @@ const EditTeacher = ({ open, handleClose, teacher }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [inputValue, setInputValue] = useState({});
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -38,7 +40,7 @@ const EditTeacher = ({ open, handleClose, teacher }) => {
     setLoading(true);
     e.preventDefault();
     try {
-      await teacherService.updateTeacher(teacher?._id, inputValue);
+      await teacherService.updateTeacher(teacher?._id, inputValue, token);
       enqueueSnackbar("Teacher updated successfully", { variant: "success" });
       setInputValue({});
     } catch (error) {

@@ -5,6 +5,7 @@ import studentService from "../../services/studentService";
 import { Box, Button, Container, Typography } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import TablePagination from "@mui/material/TablePagination";
+import { useSelector } from "react-redux";
 
 const Students = () => {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,7 @@ const Students = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(10);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleClose = () => {
     setOpen(false);
@@ -31,7 +33,7 @@ const Students = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await studentService.getStudents(page, rowsPerPage);
+        const res = await studentService.getStudents(page, rowsPerPage, token);
         setStudents(res?.data?.students || []);
         setTotalPages(res?.data?.totalPages || 0);
       } catch (error) {
@@ -41,7 +43,7 @@ const Students = () => {
     };
 
     fetchData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, token]);
 
   return (
     <Container maxWidth="lg" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

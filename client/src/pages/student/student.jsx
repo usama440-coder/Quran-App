@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import studentService from "../../services/studentService";
 import teacherService from "../../services/teacherService";
 import courseService from "../../services/courseService";
+import { useSelector } from "react-redux";
 
 const tableStyle = {
   paddingRight: "50px",
@@ -19,18 +20,21 @@ const Student = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
 
       try {
-        const res = await studentService.getStudent(id);
+        const res = await studentService.getStudent(id, token);
         const teacher = await teacherService.getTeacher(
-          res?.data?.student?.teacher
+          res?.data?.student?.teacher,
+          token
         );
         const course = await courseService.getCourse(
-          res?.data?.student?.course
+          res?.data?.student?.course,
+          token
         );
         setStudent(res?.data?.student || {});
         setTeacher(teacher?.data?.teacher || {});
@@ -43,7 +47,7 @@ const Student = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, token]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

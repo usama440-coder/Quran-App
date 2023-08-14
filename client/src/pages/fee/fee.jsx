@@ -14,12 +14,14 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const Fee = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const [feeData, setFeeData] = useState([]);
   const [open, setOpen] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   // filters
   const [page, setPage] = useState(0);
@@ -44,13 +46,14 @@ const Fee = () => {
     setLoading(true);
 
     try {
-      const res = await FeeService.getFees(page, rowsPerPage, email);
-      setFeeData(res?.data?.fee || []);
+      const res = await FeeService.getFees(page, rowsPerPage, email, token);
       setTotalPages(res?.data?.totalPages || 0);
+      setFeeData(res?.data?.fee || []);
     } catch (error) {
       enqueueSnackbar(error?.response?.data?.message || "Student not found", {
         variant: "error",
       });
+      setFeeData([]);
     }
 
     setLoading(false);
@@ -60,7 +63,7 @@ const Fee = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await FeeService.getFees(page, rowsPerPage, email);
+        const res = await FeeService.getFees(page, rowsPerPage, "", token);
         setFeeData(res?.data?.fee || []);
         setTotalPages(res?.data?.totalPages || 0);
       } catch (error) {
@@ -71,7 +74,7 @@ const Fee = () => {
     };
 
     fetchData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, token]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

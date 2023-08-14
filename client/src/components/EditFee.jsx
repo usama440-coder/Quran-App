@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import feeService from "../services/feeService";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -32,6 +33,7 @@ const EditFee = ({ open, handleClose, feeData }) => {
   const [amount, setAmount] = useState("");
   const [isPaid, setIsPaid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     setAmount(feeData?.amount);
@@ -42,7 +44,7 @@ const EditFee = ({ open, handleClose, feeData }) => {
     setLoading(true);
     e.preventDefault();
     try {
-      await feeService.editFee(feeData?._id, { amount, isPaid });
+      await feeService.editFee(feeData?._id, { amount, isPaid }, token);
       enqueueSnackbar("Fee updated successfully", { variant: "success" });
     } catch (error) {
       enqueueSnackbar(

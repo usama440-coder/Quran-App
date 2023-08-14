@@ -5,6 +5,7 @@ import TeachersTable from "../../components/TeachersTable";
 import AddTeacher from "../../components/AddTeacher";
 import teacherService from "../../services/teacherService";
 import TablePagination from "@mui/material/TablePagination";
+import { useSelector } from "react-redux";
 
 const Teachers = () => {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,7 @@ const Teachers = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(10);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleClose = () => {
     setOpen(false);
@@ -31,7 +33,7 @@ const Teachers = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await teacherService.getTeachers(page, rowsPerPage);
+        const res = await teacherService.getTeachers(page, rowsPerPage, token);
         setTeachersData(res?.data?.teachers || []);
         setTotalPages(res?.data?.totalPages || 0);
       } catch (error) {
@@ -41,7 +43,7 @@ const Teachers = () => {
     };
 
     fetchData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, token]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

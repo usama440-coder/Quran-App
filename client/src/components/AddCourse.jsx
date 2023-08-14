@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
 import courseService from "../services/courseService";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -22,12 +23,13 @@ const AddCourse = ({ open, handleClose, courseData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [course, setCourse] = useState("");
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
     try {
-      const res = await courseService.registerCourse({ name: course });
+      const res = await courseService.registerCourse({ name: course }, token);
       enqueueSnackbar("Course added successfully", { variant: "success" });
       courseData.push(res?.data?.course);
       setCourse("");

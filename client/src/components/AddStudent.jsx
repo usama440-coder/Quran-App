@@ -19,6 +19,7 @@ import teacherService from "../services/teacherService";
 import courseService from "../services/courseService";
 import studentService from "../services/studentService";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -42,15 +43,22 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
   const [teachers, setTeachers] = useState([]);
   const [courses, setCourses] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const teachersData = await teacherService.getTeachers();
-        const total = await courseService.getCourses(1, 25);
+        const totalTeachers = await courseService.getCourses(1, 25, token);
+        const totalCourses = await courseService.getCourses(1, 25, token);
+        const teachersData = await teacherService.getTeachers(
+          0,
+          totalTeachers?.data?.totalPages,
+          token
+        );
         const coursesData = await courseService.getCourses(
           0,
-          total?.data?.totalPages
+          totalCourses?.data?.totalPages,
+          token
         );
         setTeachers(teachersData?.data?.teachers || []);
         setCourses(coursesData?.data?.courses || []);
@@ -60,7 +68,7 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
     };
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -75,11 +83,14 @@ const AddStudent = ({ open, handleClose, studentsData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await studentService.registerStudent({
-        ...inputValue,
-        country: country.label,
-        afterTwelve: checked,
-      });
+      const res = await studentService.registerStudent(
+        {
+          ...inputValue,
+          country: country.label,
+          afterTwelve: checked,
+        },
+        token
+      );
 
       enqueueSnackbar("Student Added Successfully", { variant: "success" });
       setInputValue({});

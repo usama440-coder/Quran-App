@@ -19,6 +19,7 @@ import teacherService from "../services/teacherService";
 import courseService from "../services/courseService";
 import studentService from "../services/studentService";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -42,6 +43,7 @@ const EditStudent = ({ open, handleClose, student }) => {
   const [teachers, setTeachers] = useState([]);
   const [courses, setCourses] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     setInputValue({
@@ -68,8 +70,18 @@ const EditStudent = ({ open, handleClose, student }) => {
 
     const fetchData = async () => {
       try {
-        const teachersData = await teacherService.getTeachers();
-        const coursesData = await courseService.getCourses();
+        const totalTeachers = await courseService.getCourses(1, 25, token);
+        const totalCourses = await courseService.getCourses(1, 25, token);
+        const teachersData = await teacherService.getTeachers(
+          0,
+          totalTeachers?.data?.totalPages,
+          token
+        );
+        const coursesData = await courseService.getCourses(
+          0,
+          totalCourses?.data?.totalPages,
+          token
+        );
         setTeachers(teachersData?.data?.teachers || []);
         setCourses(coursesData?.data?.courses || []);
         getCountry();
@@ -79,7 +91,7 @@ const EditStudent = ({ open, handleClose, student }) => {
     };
 
     fetchData();
-  }, [student]);
+  }, [student, token]);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -94,11 +106,15 @@ const EditStudent = ({ open, handleClose, student }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await studentService.updateStudent(student?._id, {
-        ...inputValue,
-        country: country.label,
-        afterTwelve: checked,
-      });
+      await studentService.updateStudent(
+        student?._id,
+        {
+          ...inputValue,
+          country: country.label,
+          afterTwelve: checked,
+        },
+        token
+      );
 
       enqueueSnackbar("Student Updated Successfully", { variant: "success" });
       setInputValue({});

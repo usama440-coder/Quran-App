@@ -1,7 +1,11 @@
 import http from "../http-common";
 
-const getStats = () => {
-  return http.get("/stats");
+const getStats = (token) => {
+  return http.get("/stats", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 const statsService = {

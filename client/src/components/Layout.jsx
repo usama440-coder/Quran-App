@@ -11,13 +11,17 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Divider,
 } from "@mui/material";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
+import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../slices/authSlice";
 
 const drawerWidth = 240;
 
@@ -53,6 +57,13 @@ const links = [
 // general menu for mobile and other screens drawer
 export const TempDrawer = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   return (
     <div>
       <Toolbar />
@@ -60,11 +71,6 @@ export const TempDrawer = () => {
         sx={{
           overflow: "auto",
           mt: 1,
-          // backgroundImage: "url('/img/nav_back.jpg')",
-          // backgroundRepeat: "no-repeat",
-          // backgroundSize: 150,
-          // backgroundPositionX: "center",
-          // backgroundPositionY: "bottom",
         }}
       >
         <List>
@@ -78,6 +84,15 @@ export const TempDrawer = () => {
               </ListItem>
             );
           })}
+          <Divider />
+          <ListItem sx={{ color: "black" }} key="login" disablePadding>
+            <ListItemButton onClick={handleLogout}>
+              <ListItemIcon>
+                <ExitToAppOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Box>
     </div>

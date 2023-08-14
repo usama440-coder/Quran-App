@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, Typography, Modal, Button } from "@mui/material";
 import { useSnackbar } from "notistack";
 import studentService from "../services/studentService";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -21,11 +22,12 @@ const style = {
 const DeleteStudent = ({ open, handleCloseDelete, student, setStudents }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleSubmit = async (e) => {
     setLoading(true);
     try {
-      await studentService.deleteStudent(student?._id);
+      await studentService.deleteStudent(student?._id, token);
       enqueueSnackbar("Student deleted successfully", { variant: "success" });
       setStudents((prev) => prev.filter((data) => data?._id !== student?._id));
     } catch (error) {

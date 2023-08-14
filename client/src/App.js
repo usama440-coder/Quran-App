@@ -7,10 +7,10 @@ import Courses from "./pages/courses/courses";
 import Fee from "./pages/fee/fee";
 import Login from "./pages/login/login";
 import Layout from "./components/Layout";
-import { useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Student from "./pages/student/student";
 import Teacher from "./pages/teacher/teacher";
+import Protected from "./components/Protected";
 
 const theme = createTheme({
   palette: {
@@ -36,29 +36,83 @@ const theme = createTheme({
 });
 
 function App() {
-  const [isLogged, setIsLogged] = useState(true);
-
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
         <BrowserRouter>
-          {isLogged ? (
-            <Layout>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/students" element={<Students />} />
-                <Route path="/teachers" element={<Teachers />} />
-                <Route path="/courses" element={<Courses />} />
-                <Route path="/fee" element={<Fee />} />
-                <Route path="/student/:id" element={<Student />} />
-                <Route path="/teacher/:id" element={<Teacher />} />
-              </Routes>
-            </Layout>
-          ) : (
-            <Routes>
-              <Route path="/" element={<Login setIsLogged={setIsLogged} />} />
-            </Routes>
-          )}
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Dashboard />
+                  </Layout>
+                </Protected>
+              }
+            />
+            <Route
+              path="/students"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Students />
+                  </Layout>
+                </Protected>
+              }
+            />
+            <Route
+              path="/teachers"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Teachers />
+                  </Layout>
+                </Protected>
+              }
+            />
+            <Route
+              path="/courses"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Courses />
+                  </Layout>
+                </Protected>
+              }
+            />
+            <Route
+              path="/fee"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Fee />
+                  </Layout>
+                </Protected>
+              }
+            />
+            <Route
+              path="/student/:id"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Student />
+                  </Layout>
+                </Protected>
+              }
+            />
+            <Route
+              path="/teacher/:id"
+              element={
+                <Protected redirectedPath={"/login"}>
+                  <Layout>
+                    <Teacher />
+                  </Layout>
+                </Protected>
+              }
+            />
+          </Routes>
         </BrowserRouter>
       </div>
     </ThemeProvider>

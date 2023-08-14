@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
 import teacherService from "../services/teacherService";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -22,6 +23,7 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [inputValue, setInputValue] = useState({});
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -34,7 +36,7 @@ const AddTeacher = ({ open, handleClose, teachersData }) => {
     setLoading(true);
     e.preventDefault();
     try {
-      const res = await teacherService.registerTeacher(inputValue);
+      const res = await teacherService.registerTeacher(inputValue, token);
       enqueueSnackbar("Teacher added successfully", { variant: "success" });
       teachersData.push(res?.data?.teacher);
       setInputValue({});

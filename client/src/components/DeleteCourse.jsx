@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, Typography, Modal, Button } from "@mui/material";
 import { useSnackbar } from "notistack";
 import courseService from "../services/courseService";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -21,12 +22,13 @@ const style = {
 const DeleteCourse = ({ open, handleDelete, course, setCourseData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await courseService.deleteCourse(course?._id);
+      await courseService.deleteCourse(course?._id, token);
       enqueueSnackbar("Course deleted successfully", { variant: "success" });
       setCourseData((prev) => prev.filter((data) => data?._id !== course?._id));
     } catch (error) {

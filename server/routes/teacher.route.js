@@ -7,11 +7,12 @@ const {
   deleteTeacher,
   updateTeacher,
 } = require("../controllers/teacher.controller");
+const { protect } = require("../middleware/auth.middleware");
 
-teacherRouter.post("/", registerTeacher);
-teacherRouter.get("/", getTeachers);
-teacherRouter.get("/:id", getTeacher);
-teacherRouter.delete("/:id", deleteTeacher);
-teacherRouter.put("/:id", updateTeacher);
+teacherRouter.post("/", protect, registerTeacher);
+teacherRouter.get("/", protect, getTeachers);
+teacherRouter.get("/:id", protect, getTeacher);
+teacherRouter.delete("/:id", protect, deleteTeacher);
+teacherRouter.put("/:id", protect, updateTeacher);
 
 module.exports = teacherRouter;

@@ -33,7 +33,7 @@ const addFee = asyncHandler(async (req, res) => {
     // check if student already paid a fee for a month
     const isExists = await Fee.findOne({
       student: student._id,
-      date: { $gte: feeDate },
+      date: { $eq: feeDate },
     });
 
     // if not paid add fee to the array

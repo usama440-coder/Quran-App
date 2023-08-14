@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { TextField, Box, Typography, Modal, Button } from "@mui/material";
 import courseService from "../services/courseService";
 import { useSnackbar } from "notistack";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -22,6 +23,7 @@ const EditCourse = ({ open, handleClose, courseData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [course, setCourse] = useState("");
   const [loading, setLoading] = useState(false);
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     setCourse(courseData?.name);
@@ -31,7 +33,7 @@ const EditCourse = ({ open, handleClose, courseData }) => {
     setLoading(true);
     e.preventDefault();
     try {
-      await courseService.editCourse(courseData?._id, { name: course });
+      await courseService.editCourse(courseData?._id, { name: course }, token);
       enqueueSnackbar("Course updated successfully", { variant: "success" });
     } catch (error) {
       enqueueSnackbar(

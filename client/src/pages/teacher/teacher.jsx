@@ -3,6 +3,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import teacherService from "../../services/teacherService";
+import { useSelector } from "react-redux";
 
 const tableStyle = {
   paddingRight: "50px",
@@ -16,13 +17,14 @@ const Teacher = () => {
   const location = useLocation();
   const id = location.pathname.split("/")[2];
   const navigate = useNavigate();
+  const token = useSelector((state) => state.auth.admin.token);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
 
       try {
-        const res = await teacherService.getTeacher(id);
+        const res = await teacherService.getTeacher(id, token);
         setTeacher(res?.data?.teacher || {});
         setStudents(res?.data?.students || []);
         setTotalStudents(res?.data?.totalStudents || 0);
@@ -34,7 +36,7 @@ const Teacher = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, token]);
 
   return (
     <Container maxWidth="xl" sx={{ maxWidth: { xs: "400px", sm: "100%" } }}>

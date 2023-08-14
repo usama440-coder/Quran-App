@@ -8,6 +8,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import { useSelector } from "react-redux";
 
 const style = {
   position: "absolute",
@@ -30,6 +31,7 @@ const AddFee = ({ open, handleClose, feeData }) => {
   const [loading, setLoading] = useState(false);
   const [singleStudent, setSingleStudent] = useState(false);
   const [student, setStudent] = useState("");
+  const token = useSelector((state) => state.auth.admin.token);
 
   const handleSingleStudent = (e) => {
     setSingleStudent(e.target.checked);
@@ -40,9 +42,9 @@ const AddFee = ({ open, handleClose, feeData }) => {
     e.preventDefault();
     try {
       if (singleStudent) {
-        await FeeService.addFeeSingleStudent(student, { date });
+        await FeeService.addFeeSingleStudent(student, { date }, token);
       } else {
-        await FeeService.addFee({ date });
+        await FeeService.addFee({ date }, token);
       }
 
       enqueueSnackbar("Fee added successfully", { variant: "success" });
